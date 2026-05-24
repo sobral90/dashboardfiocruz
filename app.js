@@ -83,7 +83,7 @@ function createChart(id, type, labels, data, label, colors) {
     data: { labels, datasets },
     options: {
       responsive: true,
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: isBar ? { display: false } : {
           position: isMobile ? 'bottom' : 'right',
@@ -169,23 +169,23 @@ function renderTable(data) {
   document.getElementById('rowCount').textContent = `${total} registro${total !== 1 ? 's' : ''}`;
 
   if (total === 0) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#999;">Nenhum registro encontrado</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" data-label="Resultado" style="text-align:center;padding:2rem;color:#999;">Nenhum registro encontrado</td></tr>';
     renderPagination(0, 1);
     return;
   }
 
   tbody.innerHTML = pageData.map(row => `
     <tr>
-      <td>${row.numero}</td>
-      <td><strong>${escapeHtml(row.nome)}</strong></td>
-      <td><span class="status-${row.status.toLowerCase()}">${row.status}</span></td>
-      <td>${escapeHtml(row.turma)}</td>
-      <td>${escapeHtml(row.municipio)}</td>
-      <td>${escapeHtml(row.regiao)}</td>
-      <td>${escapeHtml(row.cargo)}</td>
-      <td>${escapeHtml(row.raca)}</td>
-      <td>${escapeHtml(row.genero)}</td>
-      <td>${escapeHtml(row.formacao)}</td>
+      <td data-label="N">${row.numero}</td>
+      <td data-label="Nome"><strong>${escapeHtml(row.nome)}</strong></td>
+      <td data-label="Status"><span class="status-${row.status.toLowerCase()}">${row.status}</span></td>
+      <td data-label="Turma">${escapeHtml(row.turma)}</td>
+      <td data-label="Município">${escapeHtml(row.municipio)}</td>
+      <td data-label="Região">${escapeHtml(row.regiao)}</td>
+      <td data-label="Cargo/Função">${escapeHtml(row.cargo)}</td>
+      <td data-label="Raça/Etnia">${escapeHtml(row.raca)}</td>
+      <td data-label="Gênero">${escapeHtml(row.genero)}</td>
+      <td data-label="Formação">${escapeHtml(row.formacao)}</td>
     </tr>
   `).join('');
 
