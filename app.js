@@ -112,7 +112,7 @@ function createChart(id, type, labels, data, label, colors) {
         y: {
           beginAtZero: true,
           ticks: { precision: 0, font: { family: 'Open Sans', size: isMobile ? 9 : 11 } },
-          grid: { color: '#eef2f7' }
+          grid: { color: '#ede8e0' }
         },
         x: {
           ticks: { autoSkip: false, maxRotation: isMobile ? 60 : 45, font: { family: 'Open Sans', size: isMobile ? 8 : 10 } },
