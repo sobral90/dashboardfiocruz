@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nós na Rede - Dashboard de Profissionais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Roboto+Slab:wght@400;600;700&family=Slackey&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+<div id="loadingScreen" class="loading-screen">
+  <div class="loading-spinner"></div>
+  <p>Carregando dados...</p>
+</div>
+
+<div id="mainContent" style="display:none">
+<header>
+  <div class="container header-top">
+    <div class="logo-nosnarede">
+      <a href="https://www.fiocruzbrasilia.fiocruz.br">
+        <img
+          width="108" height="40"
+          src="https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/01/nos-na-rede-logo.png"
+          alt="Nós Na Rede"
+          decoding="async"
+          srcset="https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/01/nos-na-rede-logo.png 421w, https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/01/nos-na-rede-logo-300x113.png 300w"
+          sizes="(max-width: 108px) 100vw, 108px"
+          class="logo-header"
+        >
+      </a>
+    </div>
+  </div>
+  <div class="header-bar">
+    <div class="container header-bar-content">
+      <div class="header-bar-text">
+        <h1 class="wp-block-heading has-text-align-left animate__animated animate__fadeInDown has-slackey-font-family">Nós na Rede</h1>
+        <p class="has-text-align-left animate__animated animate__fadeInDown has-text-primary-color has-text-color has-large-font-size wp-block-paragraph" style="padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;line-height:1.3">Educação Permanente para a Rede de Atenção Psicossocial no SUS</p>
+      </div>
+    </div>
+  </div>
+    <div class="update-bar">
+    <div class="container update-bar-inner">
+      <span class="update-indicator" id="updateIndicator"></span>
+      <svg class="clock-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span id="updateTime">Aguardando dados...</span>
+      <button id="btnRefresh" class="btn-refresh" title="Atualizar agora">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <section class="cards" id="summaryCards">
+      <div class="card">
+        <div class="card-icon ic-total"></div>
+        <div class="card-body">
+          <h3>Total de Profissionais</h3>
+          <span class="card-value" id="totalCount">--</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon ic-inscritos"></div>
+        <div class="card-body">
+          <h3>Inscritos</h3>
+          <span class="card-value" id="inscritosCount">--</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon ic-desistentes"></div>
+        <div class="card-body">
+          <h3>Desistentes</h3>
+          <span class="card-value" id="desistentesCount">--</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-icon ic-municipios"></div>
+        <div class="card-body">
+          <h3>Municípios</h3>
+          <span class="card-value" id="municipiosCount">--</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="filters" id="filterSection">
+      <div class="filter-header">
+        <h2>Filtros</h2>
+        <button id="clearFilters" class="btn-clear">Limpar todos</button>
+      </div>
+      <div class="filter-grid" id="filterGrid"></div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="chart-card">
+        <h2>Status da Inscrição</h2>
+        <canvas id="chartStatus"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>Raça/Etnia</h2>
+        <canvas id="chartRaca"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>Gênero</h2>
+        <canvas id="chartGenero"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>Nível de Formação</h2>
+        <canvas id="chartFormacao"></canvas>
+      </div>
+      <div class="chart-card full-width">
+        <h2>Top 15 Municípios</h2>
+        <canvas id="chartMunicipios"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>Vínculo Profissional</h2>
+        <canvas id="chartVinculo"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>PCD</h2>
+        <canvas id="chartPcd"></canvas>
+      </div>
+      <div class="chart-card">
+        <h2>Região de Saúde</h2>
+        <canvas id="chartRegiao"></canvas>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <h2>Dados Detalhados</h2>
+      <div class="table-controls">
+        <span id="rowCount">0 registros</span>
+      </div>
+      <div class="table-wrapper">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>N</th>
+              <th>Nome</th>
+              <th>Status</th>
+              <th>Turma</th>
+              <th>Município</th>
+              <th>Região</th>
+              <th>Cargo/Função</th>
+              <th>Raça/Etnia</th>
+              <th>Gênero</th>
+              <th>Formação</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div id="pagination"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <img
+      decoding="async" width="862" height="97"
+      src="https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/10/regua-assinatura-fio-brasilia.png"
+      alt="Régua de assinatura Fiocruz Brasília"
+      class="footer-assinatura"
+      srcset="https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/10/regua-assinatura-fio-brasilia.png 862w, https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/10/regua-assinatura-fio-brasilia-300x34.png 300w, https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/10/regua-assinatura-fio-brasilia-768x86.png 768w"
+      sizes="(max-width: 862px) 100vw, 862px"
+    >
+    <p class="footer-dados">Dashboard institucional — dados protegidos</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</div>
+</body>
+</html>
